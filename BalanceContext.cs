@@ -20,6 +20,8 @@ public class BalanceContext : DbContext
             user.ToTable("Users");
             user.HasKey(p => p.User_id);
             user.Property(p => p.User_name).IsRequired().HasMaxLength(150);
+            user.Property(p=>p.Created_at);
+            user.Property(p=>p.Updated_at);
         });
 
         modelBuilder.Entity<CurrencyModel>(currency =>
@@ -27,6 +29,8 @@ public class BalanceContext : DbContext
             currency.ToTable("Currencies");
             currency.HasKey(p => p.Currency_id);
             currency.Property(p => p.Currency_name).IsRequired().HasMaxLength(150);
+            currency.Property(p=>p.Created_at);
+            currency.Property(p=>p.Updated_at);
         });
 
         modelBuilder.Entity<CountryModel>(country =>
@@ -34,6 +38,8 @@ public class BalanceContext : DbContext
             country.ToTable("Countries");
             country.HasKey(p => p.Country_id);
             country.Property(p => p.Country_name).IsRequired().HasMaxLength(150);
+            country.Property(p=>p.Created_at);
+            country.Property(p=>p.Updated_at);
         });
 
         modelBuilder.Entity<BankModel>(bank =>
@@ -41,6 +47,8 @@ public class BalanceContext : DbContext
             bank.ToTable("Banks");
             bank.HasKey(p => p.Bank_id);
             bank.Property(p => p.Bank_name).IsRequired().HasMaxLength(150);
+            bank.Property(p=>p.Created_at);
+            bank.Property(p=>p.Updated_at);
         });
 
         modelBuilder.Entity<CompanyModel>(company =>
@@ -52,7 +60,8 @@ public class BalanceContext : DbContext
             company.HasOne(p=>p.Country).WithMany(p=>p.Companies).HasForeignKey(p=>p.Country_id);
             // One To One Relationship
             company.HasOne(p=>p.Currency).WithOne(p=>p.Company).HasForeignKey<CompanyModel>(p=>p.Currency_id_local);
-            
+            company.Property(p=>p.Created_at);
+            company.Property(p=>p.Updated_at);
         });
 
         modelBuilder.Entity<AccountModel>(account =>{
@@ -67,7 +76,8 @@ public class BalanceContext : DbContext
             // One To One  Relationship
             account.HasOne(p=>p.Currency).WithOne(p=>p.Account).HasForeignKey<AccountModel>(p=>p.Currency_id_account);
             account.HasOne(p=>p.Currency).WithOne(p=>p.Account).HasForeignKey<AccountModel>(p=>p.Currency_id_local);
-
+            account.Property(p=>p.Created_at);
+            account.Property(p=>p.Updated_at);
         });
 
     }
