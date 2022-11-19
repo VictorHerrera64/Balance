@@ -11,7 +11,7 @@ public class CurrencyService: ICurrencyService
 
     public IEnumerable<CurrencyModel> get()
     {
-        return context.Currencies.Include(p=>p.Company).Include(p=>p.Account);
+        return context.Currencies;
     }
     public async Task<CurrencyModel> findOne(string id_currency)
     {

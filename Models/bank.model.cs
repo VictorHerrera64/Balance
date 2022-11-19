@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
+
 namespace balance.Models;
 public class BankModel
 {
@@ -9,6 +11,7 @@ public class BankModel
      public DateTime Created_at { get; set; }
     public DateTime Updated_at { get; set; }
 
+    [JsonIgnore]
     public virtual ICollection<AccountModel>?Accounts{get;set;}
     
 }

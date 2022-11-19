@@ -11,7 +11,7 @@ public class BankService: IBankService
 
     public IEnumerable<BankModel> get()
     {
-        return context.Banks.Include(p=>p.Accounts);
+        return context.Banks;
     }
     public async Task<BankModel> findOne(string id_bank)
     {

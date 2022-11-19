@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 public class BalanceContext : DbContext
 {
-    public DbSet<UserModel> Users { get; set; }
+    public DbSet<UserModel> Users { get; set; } 
     public DbSet<CurrencyModel> Currencies { get; set; }
     public DbSet<CountryModel> Countries { get; set; }
     public DbSet<BankModel> Banks { get; set; }

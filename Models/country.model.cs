@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 namespace balance.Models;
 
 public class CountryModel
@@ -9,7 +10,9 @@ public class CountryModel
     public DateTime Created_at { get; set; }
     public DateTime Updated_at { get; set; }
 
+    [JsonIgnore]
     public virtual ICollection<CompanyModel>? Companies { get; set; }
+    [JsonIgnore]
     public virtual ICollection<AccountModel>?Accounts{get;set;}
 
 

@@ -11,7 +11,7 @@ public class CountryService: ICountryService
 
     public IEnumerable<CountryModel> get()
     {
-        return context.Countries.Include(p=>p.Companies).Include(p=>p.Accounts);
+        return context.Countries;
     }
     public async Task<CountryModel> findOne(string id_country)
     {

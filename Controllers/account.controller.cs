@@ -24,7 +24,7 @@ public class AccountController : ControllerBase
     public async Task<IResult> GetOne(string id_account)
     {
         var bank = await accountService.findOne(id_account);
-        return Results.Accepted($"bank encontrado por el id :  {id_account}", bank);
+        return Results.Accepted($"account encontrado por el id :  {id_account}", bank);
 
     }
 
@@ -32,7 +32,7 @@ public class AccountController : ControllerBase
     public async Task<IResult> Post([FromBody] AccountModel account)
     {
         await accountService.save(account);
-        return Results.Created("bank creado", account);
+        return Results.Created("account creado", account);
     }
      [HttpPut("{id}")]
     public async Task<IResult> Put(string  id, [FromBody] AccountModel account)

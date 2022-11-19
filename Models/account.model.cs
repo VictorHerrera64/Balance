@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 namespace balance.Models;
 
 public class AccountModel
@@ -15,10 +16,15 @@ public class AccountModel
     public DateTime Created_at { get; set; }
     public DateTime Updated_at { get; set; }
 
+    
     public virtual CompanyModel? Company { get; set; }
+    
     public virtual CountryModel? Country { get; set; }
+    
     public virtual BankModel? Bank { get; set; }
+    
     public virtual CurrencyModel? Currency { get; set; }
+    
     public virtual UserModel? User { get; set; }
 }
 

@@ -11,10 +11,7 @@ public class CompanyService: ICompanyService
 
     public IEnumerable<CompanyModel> get()
     {
-        return context.Companies
-        .Include(p=>p.Country)
-        .Include(p=>p.Currency)
-        .Include(p=>p.Accounts);
+        return context.Companies;
     }
     public async Task<CompanyModel> findOne(string id_company)
     {

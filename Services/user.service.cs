@@ -11,7 +11,7 @@ public class UserService: IUserService
 
     public IEnumerable<UserModel> get()
     {
-        return context.Users.Include(p=>p.Accounts);
+        return context.Users;
     }
     public async Task<UserModel> findOne(string id_user)
     {
