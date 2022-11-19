@@ -24,7 +24,7 @@ public class UserController : ControllerBase
     public async Task<IResult> GetOne(string id_user)
     {
         var user = await userService.findOne(id_user);
-        return Results.Accepted($"Usuario encontrado por el :  {id_user}", user);
+        return Results.Accepted($"Usuario encontrado por el id :  {id_user}", user);
 
     }
 
