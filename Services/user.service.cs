@@ -15,8 +15,11 @@ public class UserService: IUserService
     }
     public async Task<UserModel> findOne(string id_user)
     {
-        var response = await context.Users.FindAsync(id_user);
+         
+       var response = await context.Users.FindAsync(id_user);
+        
         return response;
+        
     }
 
     public async Task save(UserModel user)
