@@ -57,9 +57,11 @@ public class BalanceContext : DbContext
             company.HasKey(p => p.Company_id);
             company.Property(p => p.Company_name).IsRequired().HasMaxLength(150);
             // One To Many Relationship
-            company.HasOne(p => p.Country).WithMany(p => p.Companies).HasForeignKey(p => p.Country_id);
+            company.HasOne(p => p.Country).WithMany(p => p.Companies)
+            .HasForeignKey(p => p.Country_id).OnDelete(DeleteBehavior.Cascade);
             // One To One Relationship
-            company.HasOne(p => p.Currency).WithOne(p => p.Company).HasForeignKey<CompanyModel>(p => p.Currency_id_local);
+            company.HasOne(p => p.Currency).WithOne(p => p.Company)
+            .HasForeignKey<CompanyModel>(p => p.Currency_id_local).OnDelete(DeleteBehavior.Cascade);
             company.Property(p => p.Created_at);
             company.Property(p => p.Updated_at);
         });
@@ -70,13 +72,19 @@ public class BalanceContext : DbContext
             account.HasKey(p => p.Account_id);
             account.Property(p => p.Account_type).IsRequired();
             // One To Many Relationship
-            account.HasOne(p => p.Company).WithMany(p => p.Accounts).HasForeignKey(p => p.Company_id);
-            account.HasOne(p => p.Country).WithMany(p => p.Accounts).HasForeignKey(p => p.Country_id);
-            account.HasOne(p => p.Bank).WithMany(p => p.Accounts).HasForeignKey(p => p.Bank_id);
-            account.HasOne(p => p.User).WithMany(p => p.Accounts).HasForeignKey(p => p.User_id);
+            account.HasOne(p => p.Company).WithMany(p => p.Accounts)
+            .HasForeignKey(p => p.Company_id).OnDelete(DeleteBehavior.Cascade);
+            account.HasOne(p => p.Country).WithMany(p => p.Accounts)
+            .HasForeignKey(p => p.Country_id).OnDelete(DeleteBehavior.Cascade);
+            account.HasOne(p => p.Bank).WithMany(p => p.Accounts)
+            .HasForeignKey(p => p.Bank_id).OnDelete(DeleteBehavior.Cascade);
+            account.HasOne(p => p.User).WithMany(p => p.Accounts)
+            .HasForeignKey(p => p.User_id).OnDelete(DeleteBehavior.Cascade);
             // One To One  Relationship
-            account.HasOne(p => p.Currency).WithOne(p => p.Account).HasForeignKey<AccountModel>(p => p.Currency_id_account);
-            account.HasOne(p => p.Currency).WithOne(p => p.Account).HasForeignKey<AccountModel>(p => p.Currency_id_local);
+            account.HasOne(p => p.Currency).WithOne(p => p.Account)
+            .HasForeignKey<AccountModel>(p => p.Currency_id_account).OnDelete(DeleteBehavior.Cascade);
+            account.HasOne(p => p.Currency).WithOne(p => p.Account)
+            .HasForeignKey<AccountModel>(p => p.Currency_id_local).OnDelete(DeleteBehavior.Cascade);
             account.Property(p => p.Created_at);
             account.Property(p => p.Updated_at);
         });
