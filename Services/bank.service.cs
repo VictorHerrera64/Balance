@@ -33,6 +33,7 @@ public class BankService: IBankService
         if (response != null)
         {
             response.Bank_name = bank.Bank_name;
+            response.Country_id = bank.Country_id;
             response.Updated_at = DateTime.Now;
             await context.SaveChangesAsync();
         }

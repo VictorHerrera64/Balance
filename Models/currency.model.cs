@@ -8,13 +8,15 @@ public class CurrencyModel
     // getters and setter
     public string? Currency_id { get; set; }
     public string? Currency_name { get; set; }
+    public string? Country_id { get; set; }
     public DateTime Created_at { get; set; }
     public DateTime Updated_at { get; set; }
 
     [JsonIgnore]
-     public virtual CompanyModel? Company{get;set;}
-     [JsonIgnore]
-    public virtual AccountModel? Account{get;set;}
-   
+    public virtual ICollection<AccountModel>? Accounts { get; set; }
+
+    [JsonIgnore]
+    public virtual CountryModel? Country { get; set; }
+
 
 }

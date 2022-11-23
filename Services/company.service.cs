@@ -34,7 +34,6 @@ public class CompanyService: ICompanyService
         {
             response.Company_name = company.Company_name;
             response.Country_id = company.Country_id;
-            response.Currency_id_local = company.Currency_id_local;
             response.Updated_at = DateTime.Now;
             await context.SaveChangesAsync();
         }
