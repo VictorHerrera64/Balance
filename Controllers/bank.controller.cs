@@ -17,35 +17,63 @@ public class BankController : ControllerBase
     [HttpGet]
     public IActionResult Get()
     {
-        return Ok(bankService.get());
+        var bank = bankService.get();
+        if (bank.Any())
+        {
+            return Ok(bank);
+        }
+        else
+        {
+            return NotFound("No banks available");
+        }
     }
 
-    [HttpGet("{id_bank}")]
-    public async Task<IResult> GetOne(string id_bank)
+    [HttpGet("{id}")]
+    public async Task<IResult> GetOne(string id)
     {
-        var bank = await bankService.findOne(id_bank);
-        return Results.Accepted($"bank encontrado por el id :  {id_bank}", bank);
-
+        var bank = await bankService.findOne(id);
+        if (bank != null)
+        {
+            return Results.Accepted($"Bank information with the ID:   {id}", bank);
+        }
+        else
+        {
+            return Results.NotFound($"Bank not found by ID :  {id}");
+        }
     }
 
     [HttpPost]
     public async Task<IResult> Post([FromBody] BankModel bank)
     {
         await bankService.save(bank);
-        return Results.Created("bank creado", bank);
+        return Results.Created("bank created", bank);
     }
      [HttpPut("{id}")]
     public async Task<IResult> Put(string  id, [FromBody] BankModel bank)
     {
-       await bankService.update(id,bank);
-       return Results.Accepted("Se ha actualizado con exito!", bank);
+        if (await bankService.findOne(id) != null)
+        {
+            await bankService.update(id, bank);
+            return Results.Accepted("It has been updated successfully!");
+        }
+        else
+        {
+            return Results.NotFound("Bank ID does not exist");
+        }
     }
 
     [HttpDelete("{id}")]
     public async Task<IResult> delete(string id)
     {
-       await bankService.delete(id);
-       return Results.Accepted("Se ha eliminado con exito!", id);
+      if (await bankService.findOne(id) != null)
+        {
+            await bankService.delete(id);
+            return Results.Accepted("It has been removed successfully!");
+        }
+        else
+        {
+            return Results.NotFound("Bank ID does not exist");
+        }
     }
 
 }

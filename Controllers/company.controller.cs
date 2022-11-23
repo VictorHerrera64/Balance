@@ -17,14 +17,29 @@ public class CompanyController : ControllerBase
     [HttpGet]
     public IActionResult Get()
     {
-        return Ok(companyService.get());
+       var company = companyService.get();
+        if (company.Any())
+        {
+            return Ok(company);
+        }
+        else
+        {
+            return NotFound("No companies available");
+        }
     }
 
-    [HttpGet("{id_company}")]
-    public async Task<IResult> GetOne(string id_company)
+    [HttpGet("{id}")]
+    public async Task<IResult> GetOne(string id)
     {
-        var company = await companyService.findOne(id_company);
-        return Results.Accepted($"Company encontrado por el id :  {id_company}", company);
+        var company = await companyService.findOne(id);
+        if (company != null)
+        {
+            return Results.Accepted($"Company information with the ID:   {id}", company);
+        }
+        else
+        {
+            return Results.NotFound($"Company not found by ID :  {id}");
+        }
 
     }
 
@@ -32,20 +47,34 @@ public class CompanyController : ControllerBase
     public async Task<IResult> Post([FromBody] CompanyModel company)
     {
         await companyService.save(company);
-        return Results.Created("Company creado", company);
+        return Results.Created("Company created", company);
     }
      [HttpPut("{id}")]
     public async Task<IResult> Put(string  id, [FromBody] CompanyModel company)
     {
-       await companyService.update(id,company);
-       return Results.Accepted("Se ha actualizado con exito!", company);
+       if (await companyService.findOne(id) != null)
+        {
+            await companyService.update(id, company);
+            return Results.Accepted("It has been updated successfully!");
+        }
+        else
+        {
+            return Results.NotFound("Company ID does not exist");
+        }
     }
 
     [HttpDelete("{id}")]
     public async Task<IResult> delete(string id)
     {
-       await companyService.delete(id);
-       return Results.Accepted("Se ha eliminado con exito!", id);
+       if (await companyService.findOne(id) != null)
+        {
+            await companyService.delete(id);
+            return Results.Accepted("It has been removed successfully!");
+        }
+        else
+        {
+            return Results.NotFound("Company ID does not exist");
+        }
     }
 
 }

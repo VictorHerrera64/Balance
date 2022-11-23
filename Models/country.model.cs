@@ -11,9 +11,13 @@ public class CountryModel
     public DateTime Updated_at { get; set; }
 
     [JsonIgnore]
+    public virtual CurrencyModel? Currency { get; set; }
+    [JsonIgnore]
     public virtual ICollection<CompanyModel>? Companies { get; set; }
     [JsonIgnore]
-    public virtual ICollection<AccountModel>?Accounts{get;set;}
+    public virtual ICollection<AccountModel>? Accounts { get; set; }
+     [JsonIgnore]
+    public virtual ICollection<BankModel>? Banks { get; set; }
 
 
 }

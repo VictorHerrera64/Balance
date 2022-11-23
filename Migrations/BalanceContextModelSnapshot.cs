@@ -43,9 +43,6 @@ namespace balance.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Currency_id_account")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Currency_id_local")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("Updated_at")
@@ -62,9 +59,7 @@ namespace balance.Migrations
 
                     b.HasIndex("Country_id");
 
-                    b.HasIndex("Currency_id_local")
-                        .IsUnique()
-                        .HasFilter("[Currency_id_local] IS NOT NULL");
+                    b.HasIndex("Currency_id_account");
 
                     b.HasIndex("User_id");
 
@@ -81,6 +76,9 @@ namespace balance.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
 
+                    b.Property<string>("Country_id")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<DateTime>("Created_at")
                         .HasColumnType("datetime2");
 
@@ -88,6 +86,8 @@ namespace balance.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Bank_id");
+
+                    b.HasIndex("Country_id");
 
                     b.ToTable("Banks", (string)null);
                 });
@@ -108,19 +108,12 @@ namespace balance.Migrations
                     b.Property<DateTime>("Created_at")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Currency_id_local")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<DateTime>("Updated_at")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Company_id");
 
                     b.HasIndex("Country_id");
-
-                    b.HasIndex("Currency_id_local")
-                        .IsUnique()
-                        .HasFilter("[Currency_id_local] IS NOT NULL");
 
                     b.ToTable("Companies", (string)null);
                 });
@@ -151,6 +144,9 @@ namespace balance.Migrations
                     b.Property<string>("Currency_id")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("Country_id")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<DateTime>("Created_at")
                         .HasColumnType("datetime2");
 
@@ -163,6 +159,10 @@ namespace balance.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Currency_id");
+
+                    b.HasIndex("Country_id")
+                        .IsUnique()
+                        .HasFilter("[Country_id] IS NOT NULL");
 
                     b.ToTable("Currencies", (string)null);
                 });
@@ -203,8 +203,8 @@ namespace balance.Migrations
                         .HasForeignKey("Country_id");
 
                     b.HasOne("balance.Models.CurrencyModel", "Currency")
-                        .WithOne("Account")
-                        .HasForeignKey("balance.Models.AccountModel", "Currency_id_local");
+                        .WithMany("Accounts")
+                        .HasForeignKey("Currency_id_account");
 
                     b.HasOne("balance.Models.UserModel", "User")
                         .WithMany("Accounts")
@@ -221,19 +221,31 @@ namespace balance.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("balance.Models.BankModel", b =>
+                {
+                    b.HasOne("balance.Models.CountryModel", "Country")
+                        .WithMany("Banks")
+                        .HasForeignKey("Country_id");
+
+                    b.Navigation("Country");
+                });
+
             modelBuilder.Entity("balance.Models.CompanyModel", b =>
                 {
                     b.HasOne("balance.Models.CountryModel", "Country")
                         .WithMany("Companies")
                         .HasForeignKey("Country_id");
 
-                    b.HasOne("balance.Models.CurrencyModel", "Currency")
-                        .WithOne("Company")
-                        .HasForeignKey("balance.Models.CompanyModel", "Currency_id_local");
+                    b.Navigation("Country");
+                });
+
+            modelBuilder.Entity("balance.Models.CurrencyModel", b =>
+                {
+                    b.HasOne("balance.Models.CountryModel", "Country")
+                        .WithOne("Currency")
+                        .HasForeignKey("balance.Models.CurrencyModel", "Country_id");
 
                     b.Navigation("Country");
-
-                    b.Navigation("Currency");
                 });
 
             modelBuilder.Entity("balance.Models.BankModel", b =>
@@ -250,14 +262,16 @@ namespace balance.Migrations
                 {
                     b.Navigation("Accounts");
 
+                    b.Navigation("Banks");
+
                     b.Navigation("Companies");
+
+                    b.Navigation("Currency");
                 });
 
             modelBuilder.Entity("balance.Models.CurrencyModel", b =>
                 {
-                    b.Navigation("Account");
-
-                    b.Navigation("Company");
+                    b.Navigation("Accounts");
                 });
 
             modelBuilder.Entity("balance.Models.UserModel", b =>

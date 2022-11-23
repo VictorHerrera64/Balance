@@ -17,35 +17,63 @@ public class CountryController : ControllerBase
     [HttpGet]
     public IActionResult Get()
     {
-        return Ok(countryService.get());
+         var country = countryService.get();
+        if (country.Any())
+        {
+            return Ok(country);
+        }
+        else
+        {
+            return NotFound("No countries available");
+        }
     }
 
-    [HttpGet("{id_country}")]
-    public async Task<IResult> GetOne(string id_country)
+    [HttpGet("{id}")]
+    public async Task<IResult> GetOne(string id)
     {
-        var country = await countryService.findOne(id_country);
-        return Results.Accepted($"Country encontrado por el id :  {id_country}", country);
-
+        var country = await countryService.findOne(id);
+        if (country != null)
+        {
+            return Results.Accepted($"Country information with the ID:   {id}", country);
+        }
+        else
+        {
+            return Results.NotFound($"Country not found by ID :  {id}");
+        }
     }
 
     [HttpPost]
     public async Task<IResult> Post([FromBody] CountryModel country)
     {
         await countryService.save(country);
-        return Results.Created("Country creado", country);
+        return Results.Created("Country created", country);
     }
      [HttpPut("{id}")]
     public async Task<IResult> Put(string  id, [FromBody] CountryModel country)
     {
-       await countryService.update(id,country);
-       return Results.Accepted("Se ha actualizado con exito!", country);
+       if (await countryService.findOne(id) != null)
+        {
+            await countryService.update(id, country);
+            return Results.Accepted("It has been updated successfully!");
+        }
+        else
+        {
+            return Results.NotFound("Country ID does not exist");
+        }
     }
 
     [HttpDelete("{id}")]
     public async Task<IResult> delete(string id)
     {
-       await countryService.delete(id);
-       return Results.Accepted("Se ha eliminado con exito!", id);
+     if (await countryService.findOne(id) != null)
+        {
+            await countryService.delete(id);
+            return Results.Accepted("It has been removed successfully!");
+        }
+        else
+        {
+            return Results.NotFound("Country ID does not exist");
+        }
     }
 
 }

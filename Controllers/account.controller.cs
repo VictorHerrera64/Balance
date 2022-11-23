@@ -17,14 +17,29 @@ public class AccountController : ControllerBase
     [HttpGet]
     public IActionResult Get()
     {
-        return Ok(accountService.get());
+        var account = accountService.get();
+        if (account.Any())
+        {
+            return Ok(account);
+        }
+        else
+        {
+            return NotFound("No account available");
+        }
     }
 
-    [HttpGet("{id_account}")]
-    public async Task<IResult> GetOne(string id_account)
+    [HttpGet("{id}")]
+    public async Task<IResult> GetOne(string id)
     {
-        var bank = await accountService.findOne(id_account);
-        return Results.Accepted($"account encontrado por el id :  {id_account}", bank);
+       var account = await accountService.findOne(id);
+        if (account != null)
+        {
+            return Results.Accepted($"Account information with the ID:   {id}", account);
+        }
+        else
+        {
+            return Results.NotFound($"Account not found by ID :  {id}");
+        }
 
     }
 
@@ -32,20 +47,34 @@ public class AccountController : ControllerBase
     public async Task<IResult> Post([FromBody] AccountModel account)
     {
         await accountService.save(account);
-        return Results.Created("account creado", account);
+        return Results.Created("account created", account);
     }
      [HttpPut("{id}")]
     public async Task<IResult> Put(string  id, [FromBody] AccountModel account)
     {
-       await accountService.update(id,account);
-       return Results.Accepted("Se ha actualizado con exito!", account);
+       if (await accountService.findOne(id) != null)
+        {
+            await accountService.update(id, account);
+            return Results.Accepted("It has been updated successfully!");
+        }
+        else
+        {
+            return Results.NotFound("Account ID does not exist");
+        }
     }
 
     [HttpDelete("{id}")]
     public async Task<IResult> delete(string id)
     {
-       await accountService.delete(id);
-       return Results.Accepted("Se ha eliminado con exito!", id);
+       if (await accountService.findOne(id) != null)
+        {
+            await accountService.delete(id);
+            return Results.Accepted("It has been removed successfully!");
+        }
+        else
+        {
+            return Results.NotFound("Account ID does not exist");
+        }
     }
 
 }

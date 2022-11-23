@@ -1,8 +1,7 @@
 using balance.Models;
-using Microsoft.EntityFrameworkCore;
 namespace balance.Services;
 
-public class UserService: IUserService
+public class UserService : IUserService
 {
     BalanceContext context;
 
@@ -11,27 +10,28 @@ public class UserService: IUserService
 
     public IEnumerable<UserModel> get()
     {
+
         return context.Users;
     }
     public async Task<UserModel> findOne(string id_user)
     {
-         
-       var response = await context.Users.FindAsync(id_user);
-        
+
+        var response = await context.Users.FindAsync(id_user);
         return response;
-        
+
     }
 
     public async Task save(UserModel user)
     {
-         user.Created_at = DateTime.Now;
+        user.Created_at = DateTime.Now;
         await context.AddAsync(user);
-        await context.SaveChangesAsync();   
+        await context.SaveChangesAsync();
     }
-    
+
 
     public async Task update(string id_user, UserModel user)
     {
+
         var response = await context.Users.FindAsync(id_user);
         if (response != null)
         {
@@ -39,6 +39,7 @@ public class UserService: IUserService
             response.Updated_at = DateTime.Now;
             await context.SaveChangesAsync();
         }
+
     }
 
     public async Task delete(string id_user)

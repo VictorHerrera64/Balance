@@ -17,14 +17,30 @@ public class UserController : ControllerBase
     [HttpGet]
     public IActionResult Get()
     {
-        return Ok(userService.get());
+        var users = userService.get();
+        if (users.Any())
+        {
+            return Ok(users);
+        }
+        else
+        {
+            return NotFound("No users available");
+        }
     }
 
-    [HttpGet("{id_user}")]
-    public async Task<IResult> GetOne(string id_user)
+    [HttpGet("{id}")]
+    public async Task<IResult> GetOne(string id)
     {
-        var user = await userService.findOne(id_user);
-        return Results.Accepted($"Usuario encontrado por el id :  {id_user}", user);
+        var user = await userService.findOne(id);
+        if (user != null)
+        {
+            return Results.Accepted($"User information with the ID:  {id}", user);
+        }
+        else
+        {
+            return Results.NotFound($"User not found by ID :  {id}");
+        }
+
 
     }
 
@@ -32,20 +48,33 @@ public class UserController : ControllerBase
     public async Task<IResult> Post([FromBody] UserModel user)
     {
         await userService.save(user);
-        return Results.Created("User creado", user);
+        return Results.Created("User created", user);
     }
-     [HttpPut("{id}")]
-    public async Task<IResult> Put(string  id, [FromBody] UserModel user)
+    [HttpPut("{id}")]
+    public async Task<IResult> Put(string id, [FromBody] UserModel user)
     {
-       await userService.update(id,user);
-       return Results.Accepted("Se ha actualizado con exito!", user);
+        if (await userService.findOne(id) != null)
+        {
+            await userService.update(id, user);
+            return Results.Accepted("It has been updated successfully!");
+        }
+        else
+        {
+            return Results.NotFound("User ID does not exist");
+        }
+
     }
 
     [HttpDelete("{id}")]
     public async Task<IResult> delete(string id)
     {
-       await userService.delete(id);
-       return Results.Accepted("Se ha eliminado con exito!", id);
+        if (await userService.findOne(id) != null)
+        {
+        await userService.delete(id);
+        return Results.Accepted("It has been removed successfully!");
+        }else{
+           return Results.NotFound("User ID does not exist"); 
+        }
     }
 
 }
