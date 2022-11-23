@@ -24,21 +24,21 @@ public class UserController : ControllerBase
         }
         else
         {
-            return NotFound(" No hay usuarios disponibles");
+            return NotFound("No users available");
         }
     }
 
-    [HttpGet("{id_user}")]
-    public async Task<IResult> GetOne(string id_user)
+    [HttpGet("{id}")]
+    public async Task<IResult> GetOne(string id)
     {
-        var user = await userService.findOne(id_user);
+        var user = await userService.findOne(id);
         if (user != null)
         {
-            return Results.Accepted($"Usuario encontrado por el id :  {id_user}", user);
+            return Results.Accepted($"User information with the ID:  {id}", user);
         }
         else
         {
-            return Results.NotFound($"Usuario  no encontrado por el id :  {id_user}");
+            return Results.NotFound($"User not found by ID :  {id}");
         }
 
 
@@ -48,7 +48,7 @@ public class UserController : ControllerBase
     public async Task<IResult> Post([FromBody] UserModel user)
     {
         await userService.save(user);
-        return Results.Created("User creado", user);
+        return Results.Created("User created", user);
     }
     [HttpPut("{id}")]
     public async Task<IResult> Put(string id, [FromBody] UserModel user)
@@ -56,11 +56,11 @@ public class UserController : ControllerBase
         if (await userService.findOne(id) != null)
         {
             await userService.update(id, user);
-            return Results.Accepted("Se ha actualizado con exito!");
+            return Results.Accepted("It has been updated successfully!");
         }
         else
         {
-            return Results.NotFound("El ID de usuario no existe");
+            return Results.NotFound("User ID does not exist");
         }
 
     }
@@ -71,9 +71,9 @@ public class UserController : ControllerBase
         if (await userService.findOne(id) != null)
         {
         await userService.delete(id);
-        return Results.Accepted("Se ha eliminado con exito!", id);
+        return Results.Accepted("It has been removed successfully!");
         }else{
-           return Results.NotFound("El ID de usuario no existe"); 
+           return Results.NotFound("User ID does not exist"); 
         }
     }
 

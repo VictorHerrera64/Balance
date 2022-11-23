@@ -17,14 +17,30 @@ public class CurrencyController : ControllerBase
     [HttpGet]
     public IActionResult Get()
     {
-        return Ok(currencyService.get());
+        var currency = currencyService.get();
+        if (currency.Any())
+        {
+            return Ok(currency);
+        }
+        else
+        {
+            return NotFound("No currencies available");
+        }
     }
 
-    [HttpGet("{id_currency}")]
-    public async Task<IResult> GetOne(string id_currency)
+    [HttpGet("{id}")]
+    public async Task<IResult> GetOne(string id)
     {
-        var currency = await currencyService.findOne(id_currency);
-        return Results.Accepted($"Currency encontrado por el id :  {id_currency}", currency);
+        var currency = await currencyService.findOne(id);
+        if (currency != null)
+        {
+            return Results.Accepted($"Currency information with the ID:   {id}", currency);
+        }
+        else
+        {
+            return Results.NotFound($"Currency not found by ID :  {id}");
+        }
+
 
     }
 
@@ -32,20 +48,35 @@ public class CurrencyController : ControllerBase
     public async Task<IResult> Post([FromBody] CurrencyModel currency)
     {
         await currencyService.save(currency);
-        return Results.Created("Currency creado", currency);
+        return Results.Created("Currency created", currency);
     }
-     [HttpPut("{id}")]
-    public async Task<IResult> Put(string  id, [FromBody] CurrencyModel currency)
+    [HttpPut("{id}")]
+    public async Task<IResult> Put(string id, [FromBody] CurrencyModel currency)
     {
-       await currencyService.update(id,currency);
-       return Results.Accepted("Se ha actualizado con exito!", currency);
+        if (await currencyService.findOne(id) != null)
+        {
+            await currencyService.update(id, currency);
+            return Results.Accepted("It has been updated successfully!");
+        }
+        else
+        {
+            return Results.NotFound("Company ID does not exist");
+        }
     }
 
     [HttpDelete("{id}")]
     public async Task<IResult> delete(string id)
     {
-       await currencyService.delete(id);
-       return Results.Accepted("Se ha eliminado con exito!", id);
+        if (await currencyService.findOne(id) != null)
+        {
+            await currencyService.delete(id);
+            return Results.Accepted("It has been removed successfully!");
+        }
+        else
+        {
+            return Results.NotFound("Currency ID does not exist");
+        }
     }
+
 
 }
