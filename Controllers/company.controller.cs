@@ -11,13 +11,13 @@ public class CompanyController : ControllerBase
     ICompanyService companyService;
     public CompanyController(ICompanyService service)
     {
-       companyService = service;
+        companyService = service;
     }
 
     [HttpGet]
     public IActionResult Get()
     {
-       var company = companyService.get();
+        var company = companyService.get();
         if (company.Any())
         {
             return Ok(company);
@@ -46,13 +46,20 @@ public class CompanyController : ControllerBase
     [HttpPost]
     public async Task<IResult> Post([FromBody] CompanyModel company)
     {
-        await companyService.save(company);
-        return Results.Created("Company created", company);
+        if (await companyService.findOne(company.Company_id) == null)
+        {
+            await companyService.save(company);
+            return Results.Created("Company created", company);
+        }
+        else
+        {
+            return Results.Conflict("Company ID already exist, please type another ID again");
+        }
     }
-     [HttpPut("{id}")]
-    public async Task<IResult> Put(string  id, [FromBody] CompanyModel company)
+    [HttpPut("{id}")]
+    public async Task<IResult> Put(string id, [FromBody] CompanyModel company)
     {
-       if (await companyService.findOne(id) != null)
+        if (await companyService.findOne(id) != null)
         {
             await companyService.update(id, company);
             return Results.Accepted("It has been updated successfully!");
@@ -66,7 +73,7 @@ public class CompanyController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IResult> delete(string id)
     {
-       if (await companyService.findOne(id) != null)
+        if (await companyService.findOne(id) != null)
         {
             await companyService.delete(id);
             return Results.Accepted("It has been removed successfully!");

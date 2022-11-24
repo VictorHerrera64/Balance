@@ -17,7 +17,7 @@ public class CountryController : ControllerBase
     [HttpGet]
     public IActionResult Get()
     {
-         var country = countryService.get();
+        var country = countryService.get();
         if (country.Any())
         {
             return Ok(country);
@@ -45,13 +45,20 @@ public class CountryController : ControllerBase
     [HttpPost]
     public async Task<IResult> Post([FromBody] CountryModel country)
     {
-        await countryService.save(country);
-        return Results.Created("Country created", country);
+        if (await countryService.findOne(country.Country_id) == null)
+        {
+            await countryService.save(country);
+            return Results.Created("Country created", country);
+        }
+        else
+        {
+            return Results.Conflict("Country ID already exist, please type another ID again");
+        }
     }
-     [HttpPut("{id}")]
-    public async Task<IResult> Put(string  id, [FromBody] CountryModel country)
+    [HttpPut("{id}")]
+    public async Task<IResult> Put(string id, [FromBody] CountryModel country)
     {
-       if (await countryService.findOne(id) != null)
+        if (await countryService.findOne(id) != null)
         {
             await countryService.update(id, country);
             return Results.Accepted("It has been updated successfully!");
@@ -65,7 +72,7 @@ public class CountryController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IResult> delete(string id)
     {
-     if (await countryService.findOne(id) != null)
+        if (await countryService.findOne(id) != null)
         {
             await countryService.delete(id);
             return Results.Accepted("It has been removed successfully!");

@@ -47,8 +47,15 @@ public class CurrencyController : ControllerBase
     [HttpPost]
     public async Task<IResult> Post([FromBody] CurrencyModel currency)
     {
-        await currencyService.save(currency);
-        return Results.Created("Currency created", currency);
+        if (await currencyService.findOne(currency.Currency_id) == null)
+        {
+            await currencyService.save(currency);
+            return Results.Created("Currency created", currency);
+        }
+        else
+        {
+            return Results.Conflict("Currency ID already exist, please type another ID again");
+        }
     }
     [HttpPut("{id}")]
     public async Task<IResult> Put(string id, [FromBody] CurrencyModel currency)

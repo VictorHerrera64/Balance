@@ -11,7 +11,7 @@ public class BankController : ControllerBase
     IBankService bankService;
     public BankController(IBankService service)
     {
-       bankService = service;
+        bankService = service;
     }
 
     [HttpGet]
@@ -45,11 +45,18 @@ public class BankController : ControllerBase
     [HttpPost]
     public async Task<IResult> Post([FromBody] BankModel bank)
     {
-        await bankService.save(bank);
-        return Results.Created("bank created", bank);
+        if (await bankService.findOne(bank.Bank_id) == null)
+        {
+            await bankService.save(bank);
+            return Results.Created("bank created", bank);
+        }
+        else
+        {
+            return Results.Conflict("Bank ID already exist, please type another ID again");
+        }
     }
-     [HttpPut("{id}")]
-    public async Task<IResult> Put(string  id, [FromBody] BankModel bank)
+    [HttpPut("{id}")]
+    public async Task<IResult> Put(string id, [FromBody] BankModel bank)
     {
         if (await bankService.findOne(id) != null)
         {
@@ -65,7 +72,7 @@ public class BankController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IResult> delete(string id)
     {
-      if (await bankService.findOne(id) != null)
+        if (await bankService.findOne(id) != null)
         {
             await bankService.delete(id);
             return Results.Accepted("It has been removed successfully!");

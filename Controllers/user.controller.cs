@@ -47,8 +47,15 @@ public class UserController : ControllerBase
     [HttpPost]
     public async Task<IResult> Post([FromBody] UserModel user)
     {
-        await userService.save(user);
-        return Results.Created("User created", user);
+        if (await userService.findOne(user.User_id) == null)
+        {
+            await userService.save(user);
+            return Results.Created("User created", user);
+        }
+        else
+        {
+            return Results.Conflict("User ID already exist, please type another ID again");
+        }
     }
     [HttpPut("{id}")]
     public async Task<IResult> Put(string id, [FromBody] UserModel user)
@@ -70,10 +77,12 @@ public class UserController : ControllerBase
     {
         if (await userService.findOne(id) != null)
         {
-        await userService.delete(id);
-        return Results.Accepted("It has been removed successfully!");
-        }else{
-           return Results.NotFound("User ID does not exist"); 
+            await userService.delete(id);
+            return Results.Accepted("It has been removed successfully!");
+        }
+        else
+        {
+            return Results.NotFound("User ID does not exist");
         }
     }
 

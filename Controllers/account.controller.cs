@@ -11,7 +11,7 @@ public class AccountController : ControllerBase
     IAccountService accountService;
     public AccountController(IAccountService service)
     {
-       accountService = service;
+        accountService = service;
     }
 
     [HttpGet]
@@ -31,7 +31,7 @@ public class AccountController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IResult> GetOne(string id)
     {
-       var account = await accountService.findOne(id);
+        var account = await accountService.findOne(id);
         if (account != null)
         {
             return Results.Accepted($"Account information with the ID:   {id}", account);
@@ -46,13 +46,20 @@ public class AccountController : ControllerBase
     [HttpPost]
     public async Task<IResult> Post([FromBody] AccountModel account)
     {
-        await accountService.save(account);
-        return Results.Created("account created", account);
+        if (await accountService.findOne(account.Account_id) == null)
+        {
+            await accountService.save(account);
+            return Results.Created("account created", account);
+        }
+        else
+        {
+            return Results.Conflict("Account ID already exist, please type another ID again");
+        }
     }
-     [HttpPut("{id}")]
-    public async Task<IResult> Put(string  id, [FromBody] AccountModel account)
+    [HttpPut("{id}")]
+    public async Task<IResult> Put(string id, [FromBody] AccountModel account)
     {
-       if (await accountService.findOne(id) != null)
+        if (await accountService.findOne(id) != null)
         {
             await accountService.update(id, account);
             return Results.Accepted("It has been updated successfully!");
@@ -66,7 +73,7 @@ public class AccountController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IResult> delete(string id)
     {
-       if (await accountService.findOne(id) != null)
+        if (await accountService.findOne(id) != null)
         {
             await accountService.delete(id);
             return Results.Accepted("It has been removed successfully!");
